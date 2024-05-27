@@ -1,0 +1,1018 @@
+<!-- Entity List Declaration -->
+#set ($entitylist = [$entity1,$entity2,$entity3,$entity4,$entity5,$entity6,$entity7,$entity8,$entity9,$entity10])
+#set ($entitybadgelist = [$entity1,$entity2,$entity3,$entity4,$entity5,$entity6,$entity7,$entity8])
+## Header Name is passed as a string (If no heading is required, then leave it empty with two single quotes like '')
+#set ($heading='Produktempfehlungen Commaaa')
+
+## price units updates (at a time only one needs to be configured either pre or post)
+#set($pricepreunit='€')
+#set($pricepostunit='')
+
+## Incart name label
+#set($In_cart='In Cart')
+
+##Country code with button label
+##Country     Button type                 Country Language Label
+##CH_De       add_to_cart                  Zum Warenkorb hinzufügen
+##CH_IT        add_to_cart                   Aggiungi al carrello
+##CH_FR       add_to_cart                   Ajouter au panier
+##HU            add_to_cart                   Kosárba rakás
+##AT             add_to_cart                   Zum Warenkorb hinzufügen
+##SI              add_to_cart                   V košarico
+##AT_DE       more information          Mehr Informationen
+##DE_DE      more information          Mehr Informationen
+##CH_DE      more information          Mehr Informationen
+##CH_FR      more information          Plus d’informations
+##CH_IT       more information         Maggiori informazioni
+##HU_HU    more information         További információk
+##IT_IT         more information         Maggiori Informazioni
+##SI_SL        more information         Več informacij
+##AT_DE      order online                  Online bestellen
+##DE_DE  
+##CH_DE     order online                 Online bestellen
+##CH_FR     online order                 Commande en ligne
+##CH_IT      order online                 Ordini online
+##HU_HU   online order                 Online megrendeles
+##IT_IT
+##SI_SL      order online                 Naroci prek spleta
+
+##Country Delimiter Country code
+##Germany , de
+##Austria , at
+##Switzerland . ch_de
+##Italy , it
+##Slovenia , SI
+##Hungary space hu
+##Ireland . ie
+##UK . uk
+
+
+##Velocity function to update button labels
+#macro(updateButtonLabels $entity)
+  #if($entity.buttonType == "option")
+    #set($online_bestsell='Online bestellen')
+    #set($moreInformation='Mehr Informationen')
+  #end
+  #if($entity.buttonType == "add_to_bag")
+    #set($addtobag='Zum Warenkorb hinzufügen')
+  #end
+  #if($entity.buttonType == "more_info" || $entity.buttonType == "")
+    #set($moreInformation='Mehr Informationen')
+  #end 
+#end
+
+
+
+<style>
+    .component_carousel .list-of-target-carousel .slick-next,
+    .component_carousel .list-of-target-carousel .slick-prev {
+        position: absolute;
+        top: 44%;
+        margin-top: -17.5px;
+        z-index: 1;
+    }
+
+    @media (max-width: 991px) {
+
+        .component_carousel .list-of-target-carousel .slick-next,
+        .component_carousel .list-of-target-carousel .slick-prev {
+            top: 44%;
+        }
+    }
+
+    .component_carousel .list-of-target-carousel .slick-prev {
+        left: -17.5px;
+    }
+
+    @media (max-width: 768px) {
+        .component_carousel .list-of-target-carousel .slick-prev {
+            left: 0;
+        }
+
+        .component_carousel .list-of-target-carousel .btn-primary {
+            display: none
+        }
+    }
+
+    .component_carousel .list-of-target-carousel .slick-next {
+        right: -17.5px;
+    }
+
+    @media (max-width: 768px) {
+        .component_carousel .list-of-target-carousel .slick-next {
+            right: 0;
+        }
+    }
+
+    .white-carousel-wrap .component_carousel .list-of-target-carousel .slick-prev {
+        background: rgba(255, 255, 255, 0.7);
+        left: -17.5px;
+    }
+
+    .white-carousel-wrap .component_carousel .list-of-target-carousel .slick-next:before,
+    .white-carousel-wrap .component_carousel .list-of-target-carousel .slick-prev:before {
+        color: #333;
+    }
+
+    @media (max-width: 768px) {
+        .white-carousel-wrap .component_carousel .list-of-target-carousel .slick-prev {
+            left: 0;
+        }
+    }
+
+    .white-carousel-wrap .component_carousel .list-of-target-carousel .slick-next {
+        background: rgba(255, 255, 255, 0.7);
+        right: -17.5px;
+    }
+
+    @media (max-width: 768px) {
+        .white-carousel-wrap .component_carousel .list-of-target-carousel .slick-next {
+            right: 0;
+        }
+    }
+
+    .list-of-target-carousel .slick-dots li.slick-active button:before {
+        color: #344384;
+    }
+
+    .list-of-target-carousel .slick-dots {
+        position: absolute;
+        display: block;
+        width: 100%;
+        padding: 0;
+        list-style: none;
+        text-align: center;
+        margin: 0;
+        pointer-events: none;
+    }
+
+    .list-of-target-carousel .slick-dots li:first-child:last-child {
+        display: none;
+    }
+
+    .list-of-target-carousel .slick-dots li {
+        pointer-events: auto;
+        position: relative;
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    .list-of-target-carousel .slick-dots li button {
+        font-size: 0;
+        line-height: 0;
+        display: block;
+        width: 14px;
+        height: 14px;
+        padding: 5px;
+        cursor: pointer;
+        color: transparent;
+        border: 0;
+        outline: none;
+        background: 0 0;
+    }
+
+    .list-of-target-carousel .slick-dots li button:before {
+        font-size: 2.6rem;
+        line-height: 20px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 14px;
+        height: 14px;
+        content: "•";
+        text-align: center;
+        color: #d5d5d5;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .list-of-target-carousel .slick-dots {
+        bottom: -20px;
+    }
+<!--(CIMS-1060,5270)
+- all below classed are used for energyClasscode main div -.pdpEnergyWrapper2 
+- svg.ico.ico-inline2 is class for logo 
+- .pdpEnergyWrapper2 svg.ico.ico-inline2 total alinement
+}-->
+.item.plp_product .pdpEnergyWrapper2
+{
+margin-left: 10px;
+}
+.pdpEnergyWrapper2{
+min-height: 37px;
+display: -ms-flexbox;
+display: flex;
+margin-left: 10px;
+}
+
+.pdpEnergyWrapper2 svg.ico.ico-inline2 {
+cursor: pointer;
+width: 70px;
+height: 32px;
+margin-left: -7px;
+}
+
+svg.ico.ico-inline2 {
+display: inline;
+vertical-align: middle;
+position: relative;
+top: -0.1em;
+}
+
+.minwidth_target_130{
+min-width: 130px;
+}
+
+.minwidth_target_145{
+min-width: 145px;
+}
+
+.minwidth_target_90{
+min-width: 90px;
+}
+.minwidth_target_140{
+min-width: 140px;
+}
+.minwidth_target_90{
+min-width: 90px;
+font-size : 1.1rem
+}
+.low_space_alinement{
+min-width:140px!important
+}
+
+.target_span_aline_shrik{
+position:absolute;
+top:-30px
+}
+
+.wishlist_tpl_target{
+    right: 5px;
+    position: absolute;
+    top: 10px;
+}
+</style>
+<!-- Container starts -->
+<section class="container-full container_background" style="background-color:#f1f1f1">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <!-- Component Carousel which consists slider with recommended products  -->
+                <div class="component_carousel">
+                    #if($entity.id != "" )
+                    <h2 class="title-component" style="text-align:Left">$heading</h2>
+                    #end
+<!--Modal Popup is created for showing energyEfficiencyLabel , when it's not empty
+when user clicks on energy logo then only this popup will show (CIMS-5270)-->
+#foreach($entity in $entitylist)
+#if($entity.energyEfficiencyLabel != "")
+<div class="modal fade" id="modal_energy-label1" tabindex="-1" role="dialog" style="display: none;" aria-labelledby="energy-modal-label1"  aria-modal="true">
+<div class="modal-dialog modal-dialog-centered medium-width" role="dialog">
+<div class="modal-content  modal-content_scroll white-background no-background-after">
+<div class="modal-header">
+<button id="close-energypopup" class="energylabel-close-icon close" data-dismiss="modal" aria-label="Close">
+<svg class="ico">
+<use xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#close"></use>
+</svg>
+</button>
+</div>
+<div class="modal-body">
+<div class="row">
+<img class="energy-image" src= "$entity.energyEfficiencyLabel" alt="Energy Label" width="100%">
+</div>
+</div>
+</div>
+</div>
+</div>
+#end
+#end
+                    <div id="recommendation-slider" class="row  list-of-products list-of-target-carousel">
+                        #set ($count = 0)
+                        #foreach($entity in $entitylist)
+                        #if($entity.id != "" )
+                        #set ($count = $count + 1)
+                        #end
+                        #end
+                        #if($count >= 1)
+                        #foreach($entity in $entitylist)
+                        #if($entity.id != "" && $entity.pageUrl != "")
+    #set ($countryCode = $entity.pageUrl.split('/')[3])
+                        ## Remove country code from product-id
+                        #set ($rec_entry_id_temp_split = $entity.id.split("[_]"))
+
+    ##Changes regarding INC2111419 removed the two country code 
+#if($rec_entry_id_temp_split[0]=='ch')
+#set( $rec_id_target_moresplit = $entity.id.replace("$rec_entry_id_temp_split[0]_", ''))
+#set ($rec_entry_id_temp_split_2 = $rec_id_target_moresplit.split("[_]"))
+#set( $rec_id_target= $rec_id_target_moresplit.replace("$rec_entry_id_temp_split_2[0]_", ''))
+#else
+#set( $rec_id_target = $entity.id.replace("$rec_entry_id_temp_split[0]_", ''))
+#set ($varRec = $rec_id_target)
+#end
+                        <article class="wrapper at-carousel-item_grp">
+                            <!-- Assigns class and ids to each product, add or remove from wishlist features  -->
+                            <div class="item plp_product at-allproductteaserbox_grpl" data-productid="$rec_id_target">
+                                <span class="wishlist_tpl_target">
+                                    <button
+                                        class="btn btn-light btn-ico js-btn-heart at-tile-add-to-wish-list_btn prod_recomm"
+                                        data-wishlist="true" data-type="PRODUCT" data-product-code="$rec_id_target"
+                                        data-toggle="tooltip">
+                                        <span class="js-btn-heart_add">
+                                            <svg class="ico">
+                                                <use
+                                                    xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#heart">
+                                                </use>
+                                            </svg>
+                                            <span class="sr-only"></span>
+                                        </span>
+                                        <span class="js-btn-heart_remove d-none">
+                                            <svg class="ico" aria-hidden="true">
+                                                <use
+                                                    xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#heart-dark">
+                                                </use>
+                                            </svg>
+                                            <span class="sr-only">Remove from list</span>
+                                        </span>
+                                    </button>
+                                </span>
+                                <!-- Shows product image, name  -->
+                                <a href="$entity.pageUrl" target="_self">
+                                    <!-- Assigns the target_url data element value -->
+                                    <div class="plp_product__img">
+                                        <div class="badges-gallery card_badges">
+                                            #set ($badgesListL = $entity.badgesLeft.split(","))
+                                            #set ($badgesListR = $entity.badgesRight.split(","))
+                                            <div class="topLeft">
+                                                <div class="badges-spacer"></div>
+                                                #foreach($entityL in $badgesListL)
+                                                <img class="row" src="$entityL" srcset="$entityL" />
+                                                #end
+                                            </div>
+                                            <div class="topRight">
+                                                <div class="badges-spacer"></div>
+                                                #foreach($entityR in $badgesListR)
+                                                <img class="row" src="$entityR" srcset="$entityR" />
+                                                #end
+                                            </div>
+                                        </div>
+                                        <img src="$entity.thumbnailUrl" alt="" style ="object-fit:scale-down">
+                                    </div>
+                                    <h2 class="product-title" at-all-productName-lbl>$entity.name</h2>
+                                </a>
+                                <!-- Display product price value and price before product recommendation-->
+                                <div class="row plp_product__content">
+                                    <div class="col-12 text-truncate">
+                                        <div class="price retail_price">
+                                            <span class="price at-product-price_lbl">
+                                                <!-- Assigns the Target_price data element value to entity-->
+                                                #if($entity.value)
+                                               $pricepreunit #set ($rec_entry_id_temp_split = $entity.id.split("[_]"))
+#if($rec_entry_id_temp_split[0]=='de')
+$entity.value.replace(".",",").replace("&",",")
+#end
+#if($rec_entry_id_temp_split[0]=='at')
+$entity.value.replace(".",",").replace("&",",")
+#end
+#if($rec_entry_id_temp_split[0]=='ch')
+$entity.value.replace(",",".").replace("&",".")
+#end
+#if($rec_entry_id_temp_split[0]=='it')
+$entity.value.replace(".",",").replace("&",",")
+#end
+#if($rec_entry_id_temp_split[0]=='si')
+$entity.value.replace(".",",").replace("&",",")
+#end
+#if($rec_entry_id_temp_split[0]=='hu')
+$entity.value.replace("."," ").replace("&"," ").replace(","," ")
+#end
+#if($rec_entry_id_temp_split[0]=='ie')
+$entity.value.replace(",",".").replace("&",".")
+#end
+#if($rec_entry_id_temp_split[0]=='uk')
+$entity.value.replace(",",".").replace("&",".")
+#end $pricepostunit
+                                                #end
+                                            </span>
+                                        </div>
+                                        <div class="col-12">
+                                            <span class="price_before prod_recomm">
+                                                <!--Assigns the Target_wasPrice data element value to entity only if wasPrice information exits-->
+                                                #if($entity.wasPrice != "0.0" && $entity.wasPrice != 'null' &&
+$entity.wasPrice != 'undefined' && $entity.wasPrice != "" &&
+$entity.wasPrice != "%Target_wasPrice%")
+
+Statt <del>$entity.wasPrice</del>
+#else
+<p></p>
+                                                #end
+                                            </span>
+                                            <span class="additional-product-info">
+                                                <!--Assigns the Target_salesUnit element value to entity only if salesUnit information exits-->
+                                                <tr height="20px" colspan="3" width="300px">
+                                                    #set( $replaceAmount = $entity.amount.replace(".","&").replace(",",".").replace("&",","))
+                                                    #set( $replace = $replaceAmount.split("[,]"))
+                                                    #if ( $entity.salesUnit != 'null' && $entity.salesUnit != 'undefined' && $entity.salesUnit != "" )
+                                                    #if ( $entity.unit != 'null' && $entity.unit != 'undefined' && $entity.unit != "" && $entity.amount != 'null' &&
+                                                    $entity.amount != 'undefined' && $entity.amount != "0.0" && $entity.amount != "" && $entity.unitfactor != "" &&
+                                                    $entity.unitfactor != 'null' && $entity.unitfactor != 'undefined')
+                                                    #if($replace.size() == "2")
+                                                    #if( $replace[1] == "0" || $replace[1] == "1" || $replace[1] == "2" || $replace[1] == "3" || $replace[1] == "4" ||
+                                                    $replace[1] == "5" || $replace[1] == "6" || $replace[1] == "7" || $replace[1] == "8" || $replace[1] == "9")
+                                                    <td valign="top" align="left" height="20px" colspan="3" width="330px" bgcolor="#ffffff"
+                                                        
+                                                            style="text-align:left;font-family: Helvetica, Arial, sans-serif;word-wrap:normal;color:#4A4A4A;font-size:10px;font-weight:normal;">
+                                                            $entity.salesUnit ($entity.unitfactor $entity.unit = € $replaceAmount<span>0)</span>
+                                                    </td>
+                                                    #else
+                                                    <td valign="top" align="left" height="20px" colspan="3" width="330px" bgcolor="#ffffff"
+                                                        style="text-align:left;font-family: Helvetica, Arial, sans-serif;word-wrap:normal;color:#4A4A4A;font-size:10px;font-weight:normal;">
+                                                        $entity.salesUnit ($entity.unitfactor $entity.unit = € $replaceAmount)</td>
+                                                    #end
+                                                    #else
+                                                    <td valign="top" align="left" height="20px" colspan="3" width="330px" bgcolor="#ffffff"
+                                                        style="text-align:left;font-family: Helvetica, Arial, sans-serif;word-wrap:normal;color:#4A4A4A;font-size:10px;font-weight:normal;">
+                                                        $entity.salesUnit ($entity.unitfactor $entity.unit = € $replaceAmount)</td>
+                                                    #end
+                                                    #else
+                                                    <td valign="top" align="left" height="20px" colspan="3" width="330px" bgcolor="#ffffff"
+                                                        style="text-align:left;font-family: Helvetica, Arial, sans-serif;word-wrap:normal;color:#4A4A4A;font-size:10px;font-weight:normal;">
+                                                        $entity.salesUnit</td>
+                                                    #end
+                                                    #else
+                                                    <td valign="top" align="left" height="20px" colspan="3" width="330px" bgcolor="#ffffff"
+                                                        style="text-align:left;font-family: Helvetica, Arial, sans-serif;word-wrap:normal;color:#4A4A4A;font-size:10px;font-weight:normal;">
+                                                    </td>
+                                                    #end
+                                                </tr>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+<!-- Displays energybadgelogo for a product-->
+<div class="pdpEnergyWrapper2">
+<div>
+<div class="arrowLabelWrapper">
+<!-- Check if the entity.energyClassCode is not empty and then populate logo accordingly (CIMS-1060)-->
+#if($entity.energyClassCode != "" && $entity.energyClassCode != "EnergyAB")
+<svg class="ico ico-1-4x mr-2 ico-inline2 " aria-hidden="true">
+#if($entity.energyClassCode == "EnergyA")
+<use
+xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#energylabelAright">
+</use>
+#end
+#if ($entity.energyClassCode == "EnergyALegacy")
+<use
+xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#legacyenergylabelA">
+</use>
+#end
+#if ($entity.energyClassCode == "A+")
+<use
+xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#legacyenergylabelAp">
+</use>
+#end
+#if ($entity.energyClassCode == "A++")
+<use
+xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#legacyenergylabelApp">
+</use>
+#end
+#if ($entity.energyClassCode == "A+++")
+<use
+xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#legacyenergylabelAppp">
+</use>
+#end
+#if($entity.energyClassCode == "EnergyB")
+<use
+xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#energylabelBright">
+</use>
+#end
+#if ($entity.energyClassCode == "EnergyBLegacy")
+<use
+xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#legacyenergylabelB">
+</use>
+#end
+#if($entity.energyClassCode == "EnergyC")
+<use
+xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#energylabelCright">
+</use>
+#end
+#if ($entity.energyClassCode == "EnergyCLegacy")
+<use
+xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#legacyenergylabelC">
+</use>
+#end
+#if($entity.energyClassCode == "EnergyD")
+<use
+xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#energylabelDright">
+</use>
+#end
+#if ($entity.energyClassCode == "EnergyDLegacy")
+<use
+xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#legacyenergylabelD">
+</use>
+#end
+#if($entity.energyClassCode == "EnergyE")
+
+<use
+xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#energylabelEright">
+</use>
+#end
+#if($entity.energyClassCode == "EnergyF")
+
+<use
+xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#energylabelFright">
+</use>
+#end
+#if($entity.energyClassCode == "EnergyG")
+<use
+xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#energylabelGright">
+</use>
+#end
+</svg>
+#end
+</div>
+</div>
+</div>
+                                <!-- Displays customer ratings for a product-->
+                                <div class="col-12 plp_product__evaluator">
+                                    <div
+                                        class="rating-and-evaluators at-product-starrating_lbl at-allratingsreview_imgl">
+                                        <!-- Assigns the Target_customerRatings data element value to entity only if customerRatings information exits-->
+                                        #set ($foo = $entity.customerRatings)
+                                        <a href="$entity.pageUrl" data-entity-ratings="$entity.customerRatings"
+                                            tabindex="0">
+                                            #if($entity.ratingsNumber != "0.0" && $entity.ratingsNumber != 'null' &&
+                                            $entity.ratingsNumber != 'undefined' && $entity.ratingsNumber != "" &&
+                                            $entity.ratingsNumber != "%Target_ratingsNumber%")($entity.ratingsNumber)
+                                            #end
+                                        </a>
+                                    </div>
+                                </div>
+                                #if($entity.onlyOnline != "")
+                                <div class="options-onlyonline">
+                                    <!-- Assigns the Target_onlyOnline data element value to entity-->
+                                    $entity.onlyOnline
+                                </div>
+                                #end
+                                <!--                    
+#if($entity.visibilityRegions != "" )
+<div class="options-local-product">
+$entity.visibilityRegions 
+</div>
+#end
+-->
+
+                                <!-- Assign values to different variables using velocity entities-->
+                                <div class="entities d-none">
+                                    foo = $foo,
+                                    name = $entity.name,
+                                    categoryId = $entity.categoryId,
+                                    message = $entity.message,
+                                    thumbnailUrl = $entity.thumbnailUrl,
+                                    value = $entity.value,
+                                    pageUrl = $entity.pageUrl,
+                                    inventory = $entity.inventory,
+                                    margin = $entity.margin,
+                                    brand = $entity.brand,
+                                    marginLevel = $entity.marginLevel,
+                                    certificates = $entity.certificates,
+                                    customerRatings = $entity.customerRatings,
+                                    awards = $entity.awards,
+                                    wasPrice = $entity.wasPrice,
+                                    recipeCookTime = $entity.recipeCookTime,
+                                    recipeCourse = $entity.recipeCourse,
+                                    recipeCuisine = $entity.recipeCuisine,
+                                    recipeDifficultyLevel = $entity.recipeDifficultyLevel,
+                                    grossWeight = $entity.grossWeight,
+                                    heroProduct = $entity.heroProduct,
+                                    inStore = $entity.inStore,
+                                    onlineDate = $entity.onlineDate,
+                                    netWeight = $entity.netWeight,
+                                    weightUnit = $entity.weightUnit,
+                                    online = $entity.online,
+                                    onlyOnline = $entity.onlyOnline,
+                                    onSalesDateTo = $entity.onSalesDateTo,
+                                    OnSalesDateFrom = $entity.OnSalesDateFrom,
+                                    recipePrepTime = $entity.recipePrepTime,
+                                    commodityGroupName = $entity.commodityGroupName,
+                                    recipeIngredients = $entity.recipeIngredients,
+                                    status = $entity.status,
+                                    theme = $entity.theme,
+                                    allergensContains = $entity.allergensContains,
+                                    recipeTotalTime = $entity.recipeTotalTime,
+                                    visibilityRegions = $entity.visibilityRegions,
+                                    volume = $entity.volume,
+                                    volumeUnit = $entity.volumeUnit,
+                                    weightUnit = $entity.weightUnit,
+                                    nutrientsContains = $entity.nutrientsContains,
+                                    nutrientsFreeFrom = $entity.nutrientsFreeFrom,
+                                    nutrientsLow = $entity.nutrientsLow,
+                                    nutrientsHigh = $entity.nutrientsHigh
+                                </div>
+
+                                <!-- Component Footer -->
+<!-- for
+                                                INC1177410, code change done for rec_id_target . when the form is
+                                                initially loaded and $rec_id_target still has no value, an empty string
+                                                will be output instead of "$rec_id_target" . Formal and quiet reference
+                                                notation can be used together as shown below -->
+          										## Velocity function 'updateButtonLabels'is called by passing the $entity object as parameter
+												
+													#updateButtonLabels($entity)
+
+																																				       
+                                <div class="row plp_product__footer hidden-print" style = "background:none">
+                                    <div class="col-12 text-right pl-0 at-tile-cta_btn">
+                                        <div class="added_products-tpl product-preview" data-component="preview"
+                                            data-product-sku="$rec_id_target">
+                                           <span class="in-basket-label target_span_aline_shrik d-none">$In_cart</span>
+                                            #if($entity.buttonType == "option")
+                                            <button 
+                                                class="btn btn-primary small d-md-inline-block btn-minwidth_150 show-quickbuy at-options_btn text-center prod_recomm low_space_alinement"
+                                                data-product-code="$rec_id_target" data-target="#plp_product__modal"
+                                                data-toggle="modal" data-already-in-cart="" tabindex="0" 
+                                                data-url="/$!{countryCode}/quick-buy.false.$!{rec_id_target}.html?1234567890123">
+                                                <sup></sup>
+                                                $online_bestsell
+                                            </button>
+                                            <a class="btn btn-secondary btn-minwidth_150 small d-sm-inline-block d-md-none  at-moreinfo_btn float-right"
+                                                href="$entity.pageUrl">
+                                                $moreInformation
+                                            </a>
+                                            #end
+                                            #if($entity.buttonType == "add_to_bag")
+                                            <button
+                                                class="btn btn-primary small btn-minwidth_150 btn-add-to-cart btn-add-to-cart-quick add-entry addToBagQuickView_Btn prod_recomm"
+                                                data-product-code="$rec_id_target"
+                                                data-product-min-qty="$entity.minOrderQuantity"
+                                                data-sly-attribute.data-product-price="$entity.value">
+                                                $addtobag
+                                            </button>
+                                            <article class="d-none" data-already-in-cart="true"
+                                                data-max-orderable-qty="" data-stock-level="$entity.stockQuantity"
+                                                data-stock-level-status="instock" data-sku="$rec_id_target"
+                                                data-entryid="0" data-product-price="$entity.value" data-curr-qty=""
+                                                data-product-min-qty="$entity.minOrderQuantity" data-updated="true">
+                                                <div class="row_buy-component">
+                                                    <button
+                                                        class="btn btn-secondary btn-ico remove-entry buy_remove at-addtobagremove_btn d-none">
+                                                        <svg class="ico ico-inline ico-trash" aria-hidden="true">
+                                                            <use
+                                                                xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#trash">
+                                                            </use>
+                                                        </svg>
+                                                    </button>
+                                                    <button style="background-color: #FFF;"
+                                                        class="btn btn-ico btn-secondary buy_add-one-less cart-quick minus at-addtobagminus_btn d-none">
+                                                        <svg class="ico ico-inline ico-minus" aria-hidden="true">
+                                                            <use
+                                                                xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#minus">
+                                                            </use>
+                                                        </svg>
+                                                    </button>
+                                                    <div class="form-group input-wrap item-amount" data-duration="3000">
+                                                        <input onkeydown="preventDotForNumber(event);" type="number"
+                                                            min="0"
+                                                            class="form-control buy_amount basket_product_quantity custom-quantity at-productquantity_txt"
+                                                            name="buy_amount" value="">
+                                                    </div>
+                                                    <button
+                                                        class="btn btn-ico btn-primary buy_add-one-more plus at-addTobag-plus_btn">
+                                                        <svg class="ico ico-inline" aria-hidden="true">
+                                                            <use
+                                                                xlink:href="/apps/aldi/settings/wcm/designs/images/icons.svg#plus">
+                                                            </use>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </article>
+                                            #end
+                                            #if($entity.buttonType == "more_info" || $entity.buttonType == "")
+                                            <a class="btn btn-secondary small btn-minwidth_140 mt-0 mr-0 at-moreinfo_btn"
+                                                href="$entity.pageUrl">
+                                                $moreInformation
+                                            </a>
+                                            #end
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                        #end
+                        #end
+                        #end
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+
+    /*
+     * Create function to apply responsive behaviour
+     */
+/* Creating function to call at time to show shrink recommendation for cart page. Therefore slots will be 3 slots*/
+var show_slide_target = 0;
+var brk_point_target_slides = 0
+var target_corousel_somespace_alinement = function(){
+//adding object-fit property to adjust image sizing in zoomin version
+$('#recommendation-slider').find('article div.plp_product__img img').filter(function(){return this.classList.value == ""}).css('object-fit','scale-down');
+$('button.at-tile-add-to-wish-list_btn.prod_recomm').css('padding','0');
+$('button.at-tile-add-to-wish-list_btn.prod_recomm').find('.ico').css('margin-top','-1.22em');
+$('button.at-tile-add-to-wish-list_btn.prod_recomm').css('padding','0');
+$('button.at-tile-add-to-wish-list_btn.prod_recomm').find('.ico').css('margin-top','-1.22em');
+$('#recommendation-slider').find('article button.btn-minwidth_150.prod_recomm').removeClass('d-xl-block');
+$('#recommendation-slider').find('article button.btn-minwidth_150.prod_recomm').removeClass('float-right ');
+show_slide_target = 3;
+brk_point_target_slides = 2
+}
+
+    var target_applySlick_carousel = function () {
+        $(this).find('.added_products-tpl').each(function () {
+            fiabCartButtonsContext.loadButtonContext($(this));
+        });
+        $(this).find('.rating-and-evaluators > a').each(function () {
+            var calculatedRating = $(this).data("entity-ratings") * 2;
+            $(this).addClass('rating_' + calculatedRating);
+        });
+
+var target_recomm_div = $('#recommendation-slider').find('article').width(); 
+var target_id_width = $('#recommendation-slider').width()
+//fist check condition - if article width is below 200 then show shrink version of recommendation
+if(target_recomm_div < 200){
+// calling declared function to adjust all alinement and slots showing
+target_corousel_somespace_alinement();
+}
+else{
+if(target_id_width < 700)
+{ 
+// if article width is above 200 but whole recommendation div width is below 700
+//then call shrink version of code function
+target_corousel_somespace_alinement();
+}
+else
+{
+//else recommendation is normal with 4 slots 
+show_slide_target = 4;
+brk_point_target_slides = 3;
+}
+
+}
+        $(this).slick({
+            slidesToShow: show_slide_target,
+            slidesToScroll: 1,
+            dots: true,
+            infinite: false,
+            responsive: [{
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: brk_point_target_slides
+                }
+            },
+            {
+                breakpoint: 650,
+                settings: {
+                    slidesToShow: 2
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1,
+                    dots: true
+                }
+            }
+            ]
+        });
+    }; // target_applySlick_carousel() ends
+
+    /*
+     * manageHeartClickOfRecommendations():
+     * This function is to handle wishlist button click.
+     */
+    function manageHeartClickOfRecommendations(recIdent) {
+
+        $.Topic('WishlistContext_appendClickEvent').publish();
+
+        // Update ribbon
+       $(recIdent + ' div.options-onlyonline').each(function (index) {
+            if (this.innerText == "true") {
+                this.innerText = "Nur Online erhältlich";
+            } else {
+                this.innerText = "";
+                $(this).hide();
+            }
+        });
+
+        // Set was-price in comma format (German number)
+        $(recIdent + ' span.price_before.prod_recomm del').each(function (index) {
+            if (this.innerText != "") {
+                // ES6 way of converting to country specific currency value
+                let tempVal = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(parseFloat(this.innerText))
+                this.innerText = "€ " + tempVal.substring(0, (tempVal.length - 2));
+            }
+        });
+
+        /*
+         * wishlist_ids_rec:
+         * Create array containing product-ids from recommendation section which are in wishlist
+         */
+        var wishlist_ids_rec = [];
+
+        /*
+         * checkAndProcessWishlist()
+         * Create function to check and execute only if wishlists are loaded 
+         */
+        var checkAndProcessWishlist = function () {
+            if (fiabWishlistContext.wishlists == null) {
+            } else {
+
+                /*
+                 * toggleRecommendation()
+                 * Apply applicable classes based on weather they are part of array wishlist_ids_rec or not.
+                 */
+                var toggleRecommendation = function (toggledClass) {
+                    var i = 0;
+                    $('div' + recIdent + ' article button').each(function () {
+                        var entryPId = $(this).attr('data-product-code');
+                        if (entryPId != "") {// proceed only if non-empty product-id
+                            var mySelect = $("div" + recIdent + " button[data-product-code=" + entryPId + "]");
+                            // Check if is part of wishlist...toggle accordingly
+                            if (wishlist_ids_rec.indexOf(entryPId) > -1) {
+                                mySelect.find(".js-btn-heart_add").removeClass(toggledClass);
+                                mySelect.find(".js-btn-heart_add").addClass(toggledClass);
+                                mySelect.find(".js-btn-heart_remove").removeClass(toggledClass);
+                            }
+                            // if-block ends
+                            // Else not part of wishlist...toggle accordingly
+                            else {
+                                mySelect.find(".js-btn-heart_remove").removeClass(toggledClass);
+                                mySelect.find(".js-btn-heart_remove").addClass(toggledClass);
+                                mySelect.find(".js-btn-heart_add").removeClass(toggledClass);
+                            }
+                        }
+                    }); // each-block ends
+                }; // toggleRecommendation() ends
+
+                /*
+                 * updateArrayAndToggle()
+                 * Update array "wishlist_ids_rec". Add productId if not already part of the array. Remove otherwise.
+                 */
+                var updateArrayAndToggle = function (toggledClass) {
+                    wishlist_ids_rec = [];
+                    fiabWishlistContext.wishlists[0].wishlistEntries.forEach(function (entry) {
+                        wishlist_ids_rec.push($.trim(entry.sku))
+                    });
+                    // Toggle
+                    toggleRecommendation(toggledClass);
+                }; // updateArrayAndToggle() ends
+
+                /*
+                 * setToggleOnWishlist()
+                 * Add toggle functions on wishlist symbol
+                 */
+                var setToggleOnWishlist = function () {
+                    var myelement = $('.js-btn-heart.prod_recomm');
+                    if (myelement.onclick == null) {
+                        $(document).on("click", ".js-btn-heart", function (e) {
+                            const newId = $.trim($(this).data('product-code'));
+                            updateArrayAndToggle("d-none");
+                        });
+                    }
+                };  // setToggleOnWishlist() ends
+
+                setTimeout(setToggleOnWishlist, 100);
+
+                // Remove timed event
+                clearTimeout(timedVar);
+
+                // Call toggle to update once at the beginning to update wishlist button accordingly
+                updateArrayAndToggle('d-none');
+
+            } // Else block ends
+        }; // checkAndProcessWishlist() ends
+
+        // Create timed event
+        timedVar = setInterval(checkAndProcessWishlist, 100);
+    }; // manageHeartClickOfRecommendations() ends
+
+    function manageInBasketItemsRefresh() {
+
+        refreshInBasketItems();
+        $(document).mousemove(function () {
+		
+            refreshInBasketItems();
+        });
+
+        function refreshInBasketItems() {
+            [].slice.call(document.getElementsByClassName("btn-primary prod_recomm")).forEach(function (element) {
+                if (fiabCartContext && fiabCartContext.shoppingBag) {
+                    var articleBox = element.parentElement.parentElement.parentElement.parentElement;
+                    if (fiabCartContext.shoppingBag.cartEntries.length != 0) {
+                        fiabCartContext.shoppingBag.cartEntries.forEach(function (entry) {
+                            if (entry.sku == element.getAttribute("data-product-code")) {
+                                if (articleBox.className.match("item-in-cart") == null) {
+                                    articleBox.classList.toggle("item-in-cart");
+                                }
+                                if (element.className.match("at-options_btn") != null && element.getAttribute("data-already-in-cart") != entry.qty) {
+                                    element.previousElementSibling.classList.toggle("d-none");
+                                    element.setAttribute("data-already-in-cart", entry.qty);
+                                    element.firstElementChild.innerText = entry.qty;
+                                } else if (element.className.match("btn-add-to-cart") != null && element.nextElementSibling.getAttribute("data-curr-qty") != entry.qty) {
+                                   element.classList.toggle("d-none");
+                                    element.previousElementSibling.classList.toggle("d-none");
+                                    element.nextElementSibling.classList.toggle("d-none");
+                                    element.nextElementSibling.setAttribute("data-curr-qty", entry.qty);
+                                    element.nextElementSibling.children[0].children[2].children[0].setAttribute("value", entry.qty);
+                                    if (entry.qty > 1) {
+                                        element.nextElementSibling.children[0].children[1].classList.toggle("d-none");
+                                        element.nextElementSibling.children[0].children[0].classList.toggle("d-none");
+                                    } else {
+                                        element.nextElementSibling.children[0].children[0].classList.toggle("d-none");
+                                        element.nextElementSibling.children[0].children[1].classList.toggle("d-none");
+										
+                                    }
+                                }
+                            }
+                        })
+                    } else {
+                        if (articleBox.className.match("item-in-cart") != null) {
+                            articleBox.classList.toggle("item-in-cart");
+                        }
+                     
+                        if (element.className.match("at-options_btn") != null && element.previousElementSibling.className.match("d-none") == null) {
+                            element.previousElementSibling.classList.toggle("d-none");
+							element.firstElementChild.innerText = "";
+							
+                        } else if (element.className.match("btn-add-to-cart") != null && element.className.match("d-none") != null) {
+                            element.classList.toggle("d-none");
+                            element.previousElementSibling.classList.toggle("d-none");
+                            element.nextElementSibling.classList.toggle("d-none");
+							$(".in-basket-label.target_span_aline_shrik").removeClass("d-none");
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    $(document).ready(function () {
+        let recIdent = "#recommendation-slider"
+        try {
+            manageHeartClickOfRecommendations(recIdent);
+        } catch (e) {
+            console.error('***Exception while trying to call function for handling wishlist-clicks on recommendation section: ', e.message);
+        }
+
+        try {
+            manageInBasketItemsRefresh();
+        } catch (e) {
+            console.error('***Exception while trying to call function for showing appropriate button recommendation section: ', e.message);
+        }
+
+        /*
+         * Find all div of id "recommendation-slider"
+         * For each, check if it contains "div.slick-list.draggable"
+         * If not containing, then, call slick on this div
+         * Update slick function to operate on "this"
+         */
+        $('div' + recIdent).each(function (index) {
+            if ($(this).find('div.slick-list.draggable').length == 0) {
+                try {
+//this functiona includes code for shrink recommendation slots such as cart page
+                    target_applySlick_carousel.call(this); // Bind call of slick to this div
+                } catch (e) {
+                    console.error('***Exception while trying to call slick: ', e.message);
+                }
+            }
+        });
+/* This Function is called when user clicked on(CIMS-5270)
+- EnergyBadge & - EnergyLabel is not null (A popup to show the details Energy EfficiencyLabel)
+*/
+try{
+//capturing click on energyClasscode - 
+$(".ico-inline2").click(function() {
+$("#modal_energy-label1").modal("show");
+$("#modal_energy-label1").style = "block";
+});
+
+/* This Function is called when user clicked on(CIMS-5270)
+- Close button on popup at image of Energy EfficiencyLabel)
+*/
+$("#close-energypopup").click(function() {
+$("#modal_energy-label1").modal("hide");
+})
+}
+catch(e){
+console.error('***Exceptional to bring energy label popup',e.message);
+}
+
+
+    });
+
+</script>
